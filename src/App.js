@@ -1,10 +1,11 @@
 import React from 'react';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { withStyles, fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Fab from '@material-ui/core/Fab';
 import List from '@material-ui/core/List';
@@ -12,9 +13,9 @@ import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import MenuIcon from '@material-ui/icons/Menu';
 import AddIcon from '@material-ui/icons/Add';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import SearchIcon from '@material-ui/icons/Search';
-import MoreIcon from '@material-ui/icons/MoreVert'
-import InputLabel from '@material-ui/core/InputLabel';
+import MoreIcon from '@material-ui/icons/MoreVert';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -28,17 +29,25 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
+import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
 import Collapse from '@material-ui/core/Collapse';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
+import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { red } from '@material-ui/core/colors';
+import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
+import LockIcon from '@material-ui/icons/Lock';
 import InputBase from '@material-ui/core/InputBase';
 import TableContainer from '@material-ui/core/TableContainer';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import { green } from '@material-ui/core/colors';
+
 
 
 const useStyles = makeStyles((theme) => ({
+  button: {
+    margin: 2
+  },
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -84,10 +93,9 @@ const useStyles = makeStyles((theme) => ({
     margin: 5,
   },
   tableHead: {
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   paper: {
-    paddingBottom: 50,
   },
   list: {
     marginBottom: theme.spacing(2),
@@ -95,9 +103,13 @@ const useStyles = makeStyles((theme) => ({
   subheader: {
     backgroundColor: theme.palette.background.paper,
   },
+  topAppBar: {
+    backgroundColor: "#177F76"
+  },
   appBar: {
     top: 'auto',
     bottom: 0,
+    backgroundColor: "#177F76"
   },
   grow: {
     flexGrow: 1,
@@ -115,11 +127,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
+
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -142,87 +150,97 @@ const useStyles = makeStyles((theme) => ({
     transform: 'rotate(180deg)',
   },
   avatar: {
-    backgroundColor: red[500],
+    backgroundColor: "#004D44",
   },
+  header: {
+    backgroundColor: "#177F76"
+  }
 }));
 
 const messages = [
   {
     id: 1,
-    owner: "Jeffrey Boone",
+    locked: false,
+    owner: "Made by:Jeffrey Boone",
     header: "0002123",
     subheader: "TestPVE",
     projectnaam: "Frozen yoghurt",
     projectnummer: "1233",
     type: "Onderhoud",
-    datum: "21-9-1982",
+    date: "21-9-1982",
     publicatie: "7"
   },
   {
     id: 2,
-    owner: "Jeffrey Boone",
+    locked: true,
+    owner: "Made by:Jeffrey Boone",
     header: "0002123",
     subheader: "TestPVE",
     projectnaam: "Frozen yoghurt",
     projectnummer: "1233",
     type: "Onderhoud",
-    datum: "21-9-1982",
+    date: "21-9-1982",
     publicatie: "7"
   },
   {
     id: 3,
-    owner: "Jeffrey Boone",
+    locked: true,
+    owner: "Made by:Jeffrey Boone",
     header: "0002123",
     subheader: "TestPVE",
     projectnaam: "Frozen yoghurt",
     projectnummer: "1233",
     type: "Onderhoud",
-    datum: "21-9-1982",
+    date: "21-9-1982",
     publicatie: "7"
   }, {
     id: 4,
-    owner: "Jeffrey Boone",
+    locked: true,
+    owner: "Made by:Jeffrey Boone",
     header: "0002123",
     subheader: "TestPVE",
     projectnaam: "Frozen yoghurt",
     projectnummer: "1233",
     type: "Onderhoud",
-    datum: "21-9-1982",
+    date: "21-9-1982",
     publicatie: "7"
 
   },
   {
     id: 5,
-    owner: "Jeffrey Boone",
+    locked: true,
+    owner: "Made by:Jeffrey Boone",
     header: "0002123",
     subheader: "TestPVE",
     projectnaam: "Frozen yoghurt",
     projectnummer: "1233",
     type: "Onderhoud",
-    datum: "21-9-1982",
+    date: "21-9-1982",
     publicatie: "7"
   },
   {
     id: 6,
-    owner: "Jeffrey Boone",
+    locked: true,
+    owner: "Made by:Jeffrey Boone",
     header: "0002123",
     subheader: "TestPVE",
     projectnaam: "Frozen yoghurt",
     projectnummer: "1233",
     type: "Onderhoud",
-    datum: "21-9-1982",
+    date: "21-9-1982",
     publicatie: "7"
 
   },
   {
     id: 7,
-    owner: "Jeffrey Boone",
+    locked: false,
+    owner: "Made by:Jeffrey Boone",
     header: "0002123",
     subheader: "TestPVE",
     projectnaam: "Frozen yoghurt",
     projectnummer: "1233",
     type: "Onderhoud",
-    datum: "21-9-1982",
+    date: "21-9-1982",
     publicatie: "7"
 
   },
@@ -230,11 +248,20 @@ const messages = [
 
 
 export default function App() {
+  const ColorButton = withStyles((theme) => ({
+    root: {
+      color: green[500],
+      '&:hover': {
+        color: green[700],
+      },
+    },
+  }))(Button);
   const classes = useStyles();
-  const [age, setAge] = React.useState('');
+  const [status, setStatus] = React.useState(0);
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setStatus(event.target.value);
   };
+
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
@@ -246,13 +273,13 @@ export default function App() {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="static">
+      <AppBar position="static" className={classes.topAppBar}>
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
+          <IconButton mdDown edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+            <img src="dali-bright.png" alt="Italian Trulli" width="35" />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            News
+            Pve
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
@@ -269,45 +296,52 @@ export default function App() {
           </div>
         </Toolbar>
       </AppBar>
-
       <Paper square className={classes.paper}>
-        <FormControl xs="12" className={classes.formControl}>
-          <InputLabel id="demo-simple-select-label">Age</InputLabel>
+        <FormControl className={classes.formControl} fullWidth={true}>
           <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={age}
+            variant="filled"
+            value={status}
             onChange={handleChange}
+            displayEmpty
+            className={classes.selectEmpty}
+            inputProps={{ 'aria-label': 'Without label' }}
           >
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+            <MenuItem value={0}>
+              <em>All</em>
+            </MenuItem>
+            <MenuItem value={1}>In Bewerking</MenuItem>
+            <MenuItem value={2}>Vastgesteld</MenuItem>
           </Select>
+          <FormHelperText>Status</FormHelperText>
         </FormControl>
-
-
-
-
         <List className={classes.list}>
           <Grid container>
-            {messages.map(({ id, projectnaam, projectnummer, type, header, subheader, datum, publicatie }) => (
-              <Grid item xs={12} md={3}>
+            {messages.map(({ id, locked, projectnaam, projectnummer, type, header, subheader, date, publicatie, owner }) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
                 <React.Fragment key={id}>
 
                   <Card className={classes.card}>
-                    <CardHeader
+                    <CardHeader className={classes.header}
                       avatar={
                         <Avatar aria-label="recipe" className={classes.avatar}>
-                          R
-          </Avatar>
+                          {(locked === false) && <div id="myDiv">
+                            <LockOpenOutlinedIcon />
+                          </div>
+                          }
+                          {(locked === true) && <div id="myDiv">
+                            <LockIcon />
+                          </div>
+                          }
+
+                        </Avatar>
                       }
                       action={
                         <IconButton aria-label="settings">
                           <MoreVertIcon />
                         </IconButton>
                       }
-                      title="Shrimp and Chorizo Paella"
-                      subheader="September 14, 2016"
+                      title={owner}
+                      subheader={date}
                     />
                     <TableContainer>
                       <Table className={classes.table} aria-label="simple table">
@@ -338,12 +372,6 @@ export default function App() {
                             </TableCell>
                             <TableCell align="right">{type}</TableCell>
                           </TableRow>
-                          <TableRow key={datum}>
-                            <TableCell component="th" scope="row">
-                              Datum
-                            </TableCell>
-                            <TableCell align="right">{datum}</TableCell>
-                          </TableRow>
                           <TableRow key={publicatie}>
                             <TableCell component="th" scope="row">
                               Publicatie
@@ -353,14 +381,19 @@ export default function App() {
                         </TableBody>
                       </Table>
                     </TableContainer>
-
                     <CardActions disableSpacing>
-                      <IconButton aria-label="add to favorites">
-                        <FavoriteIcon />
+                      <Button className={classes.button} variant="contained" color="primary" aria-label="open in browser">
+                        <OpenInBrowserIcon />
+                      </Button>
+                      <IconButton className={classes.button} aria-label="share">
+                        <DeleteForeverIcon />
                       </IconButton>
-                      <IconButton aria-label="share">
-                        <ShareIcon />
-                      </IconButton>
+                      <Button className={classes.button} variant="outlined" color="secondary" aria-label="PersonAddDisabledIcon">
+                        <PersonAddDisabledIcon />
+                      </Button>
+                      <ColorButton className={classes.button} variant="outlined" color="primary" aria-label="PersonAddDisabledIcon">
+                        <PersonAddIcon />
+                      </ColorButton>
                       <IconButton
                         className={clsx(classes.expand, {
                           [classes.expandOpen]: expanded,
@@ -374,51 +407,15 @@ export default function App() {
                     </CardActions>
                     <Collapse in={expanded} timeout="auto" unmountOnExit>
                       <CardContent>
-                        <Typography paragraph>Method:</Typography>
-                        <Typography paragraph>
-                          Heat 1/2 cup of the broth in a pot until simmering, add saffron and set aside for 10
-                          minutes.
-          </Typography>
-                        <Typography paragraph>
-                          Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over medium-high
-                          heat. Add chicken, shrimp and chorizo, and cook, stirring occasionally until lightly
-                          browned, 6 to 8 minutes. Transfer shrimp to a large plate and set aside, leaving chicken
-                          and chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes, onion, salt and
-                          pepper, and cook, stirring often until thickened and fragrant, about 10 minutes. Add
-                          saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-          </Typography>
-                        <Typography paragraph>
-                          Add rice and stir very gently to distribute. Top with artichokes and peppers, and cook
-                          without stirring, until most of the liquid is absorbed, 15 to 18 minutes. Reduce heat to
-                          medium-low, add reserved shrimp and mussels, tucking them down into the rice, and cook
-                          again without stirring, until mussels have opened and rice is just tender, 5 to 7
-                          minutes more. (Discard any mussels that don’t open.)
-          </Typography>
-                        <Typography>
-                          Set aside off of the heat to let rest for 10 minutes, and then serve.
-          </Typography>
+                        <Typography paragraph>Expanded list will be loaded here:</Typography>
                       </CardContent>
                     </Collapse>
                   </Card>
-
-
-                  {/* {id === 1 && <ListSubheader className={classes.subheader}>Today</ListSubheader>}
-                {id === 3 && <ListSubheader className={classes.subheader}>Yesterday</ListSubheader>}
-                  <ListItem button>
-                    <ListItemAvatar>
-                      <Avatar alt="Profile Picture" src={person} />
-                    </ListItemAvatar>
-                    <ListItemText primary={primary} secondary={secondary} />
-                  </ListItem> */}
                 </React.Fragment>
               </Grid>
             ))}
           </Grid>
         </List>
-
-
-
-
       </Paper>
       <AppBar position="fixed" color="primary" className={classes.appBar}>
         <Toolbar>
@@ -429,9 +426,6 @@ export default function App() {
             <AddIcon />
           </Fab>
           <div className={classes.grow} />
-          <IconButton color="inherit">
-            <SearchIcon />
-          </IconButton>
           <IconButton edge="end" color="inherit">
             <MoreIcon />
           </IconButton>
