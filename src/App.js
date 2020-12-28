@@ -258,14 +258,14 @@ export default function App() {
   }))(Button);
   const classes = useStyles();
   const [status, setStatus] = React.useState(0);
-  const handleChange = (event) => {
-    setStatus(event.target.value);
-  };
-
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
+  };
+
+  const handleChange = (event) => {
+    setStatus(event.target.value);
   };
 
 
@@ -319,7 +319,6 @@ export default function App() {
             {messages.map(({ id, locked, projectnaam, projectnummer, type, header, subheader, date, publicatie, owner }) => (
               <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
                 <React.Fragment key={id}>
-
                   <Card className={classes.card}>
                     <CardHeader className={classes.header}
                       avatar={
@@ -345,14 +344,12 @@ export default function App() {
                     />
                     <TableContainer>
                       <Table className={classes.table} aria-label="simple table">
-
                         <TableHead>
                           <TableRow>
                             <TableCell className={classes.tableHead}>{header}</TableCell>
                             <TableCell className={classes.tableHead} align="right">{subheader}</TableCell>
                           </TableRow>
                         </TableHead>
-
                         <TableBody>
                           <TableRow key={projectnaam}>
                             <TableCell component="th" scope="row">
