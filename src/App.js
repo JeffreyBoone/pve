@@ -316,6 +316,7 @@ export default function App() {
         </FormControl>
         <List className={classes.list}>
           <Grid container>
+            
             {messages.map(({ id, locked, projectnaam, projectnummer, type, header, subheader, date, publicatie, owner }) => (
               <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
                 <React.Fragment key={id}>
