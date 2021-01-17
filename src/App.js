@@ -40,8 +40,9 @@ import LockIcon from '@material-ui/icons/Lock';
 import InputBase from '@material-ui/core/InputBase';
 import TableContainer from '@material-ui/core/TableContainer';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 import { green } from '@material-ui/core/colors';
-
+import Divider from '@material-ui/core/Divider';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -281,6 +282,8 @@ export default function App() {
           <Typography variant="h6" className={classes.title}>
             Pve
           </Typography>
+          < AccountCircleRoundedIcon/>
+          <Divider orientation="vertical" flexItem />
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -296,6 +299,7 @@ export default function App() {
           </div>
         </Toolbar>
       </AppBar>
+
       <Paper square className={classes.paper}>
         <FormControl className={classes.formControl} fullWidth={true}>
           <Select
