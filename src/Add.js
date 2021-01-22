@@ -1,0 +1,38 @@
+import React, { useCallback, useRef, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { blueGrey } from '@material-ui/core/colors';
+
+
+const useStyles = makeStyles({
+  title: {
+    fontSize: 24,
+  },
+});;
+
+export default function Add({ width, height }) {
+  const classes = useStyles();
+  return <div>
+    <Card style={{ width: width - 1, height: height, backgroundColor: blueGrey[100], margin: 5 }} variant="outlined">
+      <Grid
+        container
+        spacing={0}
+        direction="column"
+        alignItems="center"
+        justify="center"
+        style={{ minHeight: '75%' }}
+      >
+        <Grid item >
+          <AddCircleIcon style={{ fontSize: 60 }} />
+        </Grid>
+        <Grid item >
+          <Typography style={{ fontSize: 20 }} className={classes.title}>Click here to add item</Typography>
+        </Grid>
+      </Grid>
+    </Card>
+  </div>
+
+}

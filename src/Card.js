@@ -1,0 +1,279 @@
+import React from 'react';
+import { withStyles, fade, makeStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import Avatar from '@material-ui/core/Avatar';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import clsx from 'clsx';
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import CardActions from '@material-ui/core/CardActions';
+import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
+import Collapse from '@material-ui/core/Collapse';
+import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
+import LockIcon from '@material-ui/icons/Lock';
+import TableContainer from '@material-ui/core/TableContainer';
+import { green } from '@material-ui/core/colors';
+import Hidden from '@material-ui/core/Hidden';
+import { grey, blueGrey } from '@material-ui/core/colors';
+
+
+const useStyles = makeStyles((theme) => ({
+  button: {
+    margin: 2
+  },
+  actions: {
+    backgroundColor: blueGrey[100]
+  },
+  table: {
+    backgroundColor: grey[200]
+  },
+  search: {
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    '&:hover': {
+      backgroundColor: fade(theme.palette.common.white, 0.25),
+    },
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('xs')]: {
+      width: 'auto',
+    },
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputRoot: {
+    color: 'inherit',
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      width: '12ch',
+      '&:focus': {
+        width: '20ch',
+      },
+    },
+  },
+  text: {
+    padding: theme.spacing(2, 2, 0),
+  },
+  card: {
+    margin: 5,
+  },
+  tableHead: {
+    fontWeight: 'bold'
+  },
+  paper: {
+  },
+  list: {
+    marginBottom: theme.spacing(2),
+  },
+  subheader: {
+    backgroundColor: theme.palette.background.paper,
+  },
+  topAppBar: {
+    backgroundColor: "#177F76"
+  },
+  appBar: {
+    top: 'auto',
+    bottom: 0,
+    backgroundColor: "#177F76"
+  },
+  grow: {
+    flexGrow: 1,
+  },
+  fabButton: {
+    position: 'absolute',
+    zIndex: 1,
+    top: -30,
+    left: 0,
+    right: 0,
+    margin: '0 auto',
+  },
+
+  root: {
+    flexGrow: 1,
+  },
+  formControl: {
+
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+  },
+  media: {
+    height: 0,
+    paddingTop: '56.25%', // 16:9
+  },
+  expand: {
+    transform: 'rotate(0deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  expandOpen: {
+    transform: 'rotate(180deg)',
+  },
+  avatar: {
+    backgroundColor: "#004D44",
+  },
+  header: {
+    backgroundColor: "#177F76"
+  }
+}));
+
+export default function CardWidget(props) {
+  const ColorButton = withStyles((theme) => ({
+    root: {
+      color: green[500],
+      '&:hover': {
+        color: green[700],
+      },
+    },
+  }))(Button);
+  const classes = useStyles();
+  const [expanded, setExpanded] = React.useState(false);
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
+
+  return (
+    <div className={classes.root}>
+      <React.Fragment key={props.id}>
+        <Card className={classes.card}>
+          <CardHeader className={classes.header}
+            avatar={
+              <Avatar aria-label="recipe" className={classes.avatar}>
+                {(props.status === "In Bewerking") && <div id="myDiv">
+                  <LockOpenOutlinedIcon />
+                </div>
+                }
+                {(props.status === "Vastgesteld") && <div id="myDiv">
+                  <LockIcon />
+                </div>
+                }
+
+              </Avatar>
+            }
+            action={
+              <IconButton aria-label="settings">
+                <MoreVertIcon />
+              </IconButton>
+            }
+            title={props.owner}
+            subheader={props.date}
+          />
+          <TableContainer>
+            <Table className={classes.table} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell className={classes.tableHead}>{props.header}</TableCell>
+                  <TableCell className={classes.tableHead} align="right">{props.subheader}</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow key={props.projectnaam}>
+                  <TableCell component="th" scope="row">
+                    Projectnaam
+                            </TableCell>
+                  <TableCell align="right">{props.projectnaam}</TableCell>
+                </TableRow>
+                <TableRow key={props.projectnummer}>
+                  <TableCell component="th" scope="row">
+                    Projectnummer
+                            </TableCell>
+                  <TableCell align="right">{props.projectnummer}</TableCell>
+                </TableRow>
+                <TableRow key={props.type}>
+                  <TableCell component="th" scope="row">
+                    Type
+                            </TableCell>
+                  <TableCell align="right">{props.type}</TableCell>
+                </TableRow>
+                <TableRow key={props.publicatie}>
+                  <TableCell component="th" scope="row">
+                    Publicatie
+                            </TableCell>
+                  <TableCell align="right">{props.publicatie}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <CardActions disableSpacing className={classes.actions}>
+            <Hidden smUp> {/* open in browser only visible when below sm */}
+              <Button className={classes.button} variant="contained" color="primary" aria-label="open in browser">
+                <OpenInBrowserIcon />
+              </Button>
+            </Hidden>
+            <IconButton className={classes.button} aria-label="share">
+              <DeleteForeverIcon />
+            </IconButton>
+            <Button className={classes.button} variant="outlined" color="secondary" aria-label="PersonAddDisabledIcon">
+              <PersonAddDisabledIcon />
+            </Button>
+            <ColorButton className={classes.button} variant="outlined" color="primary" aria-label="PersonAddDisabledIcon">
+              <PersonAddIcon />
+            </ColorButton>
+            <IconButton
+              className={clsx(classes.expand, {
+                [classes.expandOpen]: expanded,
+              })}
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show more"
+            >
+              <ExpandMoreIcon />
+            </IconButton>
+          </CardActions>
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
+
+          <TableContainer>
+            <Table className={classes.table} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell className={classes.tableHead}>Hier</TableCell>
+                  <TableCell className={classes.tableHead} align="right">Komt</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow key={props.projectnaam}>
+                  <TableCell component="th" scope="row">
+                    Extra
+                            </TableCell>
+                  <TableCell align="right">Info</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          </Collapse>
+        </Card>
+      </React.Fragment>
+    </div>
+  );
+}

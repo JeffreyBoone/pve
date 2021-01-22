@@ -1,53 +1,103 @@
-import React from 'react';
-import { withStyles, fade, makeStyles } from '@material-ui/core/styles';
+import React, { useCallback, useRef, useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+import Hidden from '@material-ui/core/Hidden';
+import IconButton from '@material-ui/core/IconButton';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import CardHeader from '@material-ui/core/CardHeader';
+import Avatar from '@material-ui/core/Avatar';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import MailIcon from '@material-ui/icons/Mail';
+import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
+import { fade, makeStyles, useTheme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Fab from '@material-ui/core/Fab';
-import List from '@material-ui/core/List';
 import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
-import MenuIcon from '@material-ui/icons/Menu';
 import AddIcon from '@material-ui/icons/Add';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import SearchIcon from '@material-ui/icons/Search';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import clsx from 'clsx';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
-import Collapse from '@material-ui/core/Collapse';
-import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
-import LockIcon from '@material-ui/icons/Lock';
 import InputBase from '@material-ui/core/InputBase';
-import TableContainer from '@material-ui/core/TableContainer';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
-import { green } from '@material-ui/core/colors';
-import Divider from '@material-ui/core/Divider';
-
+import CardWidget from './Card';
+import Filter from './Filter';
+import User from './User';
+import Add from './Add';
 
 const useStyles = makeStyles((theme) => ({
-  button: {
-    margin: 2
+  root: {
+    display: 'flex',
+  },
+  drawer: {
+    [theme.breakpoints.up('md')]: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+  },
+  topAppBar: {
+    [theme.breakpoints.up('md')]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: drawerWidth,
+    },
+    backgroundColor: "#177F76"
+
+  },
+  appBar: {
+    [theme.breakpoints.up('md')]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: drawerWidth,
+    },
+    top: 'auto',
+    bottom: 0,
+    backgroundColor: "#177F76"
+  },
+  add: {
+    flex: 1, 
+    display: "flex"
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  // necessary for content to be below app bar
+  toolbar: theme.mixins.toolbar,
+
+  toolbar: {
+    height: 63
+  },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(1),
+  },
+  text: {
+    padding: theme.spacing(2, 2, 0),
+  },
+  paper: {
+    paddingBottom: 50,
+  },
+  list: {
+    marginBottom: theme.spacing(2),
+  },
+  subheader: {
+    backgroundColor: theme.palette.background.paper,
+  },
+  grow: {
+    flexGrow: 1,
+  },
+  fabButton: {
+    position: 'absolute',
+    zIndex: 1,
+    top: -30,
+    left: 0,
+    right: 0,
+    margin: '0 auto',
   },
   search: {
     position: 'relative',
@@ -87,203 +137,194 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
-  text: {
-    padding: theme.spacing(2, 2, 0),
-  },
-  card: {
-    margin: 5,
-  },
-  tableHead: {
-    fontWeight: 'bold'
-  },
-  paper: {
-  },
-  list: {
-    marginBottom: theme.spacing(2),
-  },
-  subheader: {
-    backgroundColor: theme.palette.background.paper,
-  },
-  topAppBar: {
-    backgroundColor: "#177F76"
-  },
-  appBar: {
-    top: 'auto',
-    bottom: 0,
-    backgroundColor: "#177F76"
-  },
-  grow: {
-    flexGrow: 1,
-  },
-  fabButton: {
-    position: 'absolute',
-    zIndex: 1,
-    top: -30,
-    left: 0,
-    right: 0,
-    margin: '0 auto',
-  },
-
-  root: {
-    flexGrow: 1,
-  },
-  formControl: {
-
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-  media: {
-    height: 0,
-    paddingTop: '56.25%', // 16:9
-  },
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
-  },
-  avatar: {
-    backgroundColor: "#004D44",
-  },
-  header: {
-    backgroundColor: "#177F76"
-  }
 }));
 
 const messages = [
   {
     id: 1,
-    locked: false,
-    owner: "Made by:Jeffrey Boone",
-    header: "0002123",
+    owner: "Made by: Jeffrey Boone",
+    header: "074204",
     subheader: "TestPVE",
     projectnaam: "Frozen yoghurt",
     projectnummer: "1233",
     type: "Onderhoud",
-    date: "21-9-1982",
-    publicatie: "7"
+    date: "1-1-1934",
+    publicatie: "1",
+    status: "Vastgesteld"
   },
   {
     id: 2,
-    locked: true,
-    owner: "Made by:Jeffrey Boone",
+    owner: "Made by: Jeffrey Boone",
     header: "0002123",
     subheader: "TestPVE",
-    projectnaam: "Frozen yoghurt",
-    projectnummer: "1233",
+    projectnaam: "On The Hunt",
+    projectnummer: "6372",
     type: "Onderhoud",
     date: "21-9-1982",
-    publicatie: "7"
+    publicatie: "2",
+    status: "In Bewerking"
   },
   {
     id: 3,
-    locked: true,
-    owner: "Made by:Jeffrey Boone",
-    header: "0002123",
+    owner: "Made by: Jeffrey Boone",
+    header: "0372947",
     subheader: "TestPVE",
-    projectnaam: "Frozen yoghurt",
-    projectnummer: "1233",
+    projectnaam: "The Frozen Dessert",
+    projectnummer: "8386",
     type: "Onderhoud",
-    date: "21-9-1982",
-    publicatie: "7"
+    date: "3-3-2002",
+    publicatie: "3",
+    status: "In Bewerking"
   }, {
     id: 4,
-    locked: true,
-    owner: "Made by:Jeffrey Boone",
-    header: "0002123",
+    owner: "Made by: Stefan",
+    header: "087420",
     subheader: "TestPVE",
-    projectnaam: "Frozen yoghurt",
-    projectnummer: "1233",
+    projectnaam: "From Long to Lost",
+    projectnummer: "2301",
     type: "Onderhoud",
-    date: "21-9-1982",
-    publicatie: "7"
+    date: "23-7-2021",
+    publicatie: "4",
+    status: "Vastgesteld"
 
   },
   {
     id: 5,
-    locked: true,
-    owner: "Made by:Jeffrey Boone",
-    header: "0002123",
+    owner: "Made by: Jeffrey Boone",
+    header: "963264",
     subheader: "TestPVE",
-    projectnaam: "Frozen yoghurt",
-    projectnummer: "1233",
+    projectnaam: "Behind the Gatewalls",
+    projectnummer: "67893",
     type: "Onderhoud",
-    date: "21-9-1982",
-    publicatie: "7"
+    date: "8-3-1998",
+    publicatie: "5",
+    status: "In Bewerking"
   },
   {
     id: 6,
-    locked: true,
-    owner: "Made by:Jeffrey Boone",
-    header: "0002123",
+    owner: "Made by: Anand",
+    header: "83729873",
     subheader: "TestPVE",
-    projectnaam: "Frozen yoghurt",
-    projectnummer: "1233",
+    projectnaam: "Bind The Door",
+    projectnummer: "8523",
     type: "Onderhoud",
-    date: "21-9-1982",
-    publicatie: "7"
+    date: "9-6-2019",
+    publicatie: "6",
+    status: "Vastgesteld"
 
   },
   {
     id: 7,
-    locked: false,
-    owner: "Made by:Jeffrey Boone",
-    header: "0002123",
+    owner: "Made by: Jeffrey Boone",
+    header: "0873230",
     subheader: "TestPVE",
-    projectnaam: "Frozen yoghurt",
-    projectnummer: "1233",
+    projectnaam: "Tundra of Dust",
+    projectnummer: "4197",
     type: "Onderhoud",
-    date: "21-9-1982",
-    publicatie: "7"
+    date: "3-2-1982",
+    publicatie: "7",
+    status: "Vastgesteld"
 
   },
 ];
 
+const options = [
+  "In Bewerking",
+  "Vastgesteld",
+];
 
-export default function App() {
-  const ColorButton = withStyles((theme) => ({
-    root: {
-      color: green[500],
-      '&:hover': {
-        color: green[700],
-      },
-    },
-  }))(Button);
+const drawerWidth = 240;
+
+export default function App(props) {
+  const { window } = props;
   const classes = useStyles();
-  const [status, setStatus] = React.useState(0);
-  const [expanded, setExpanded] = React.useState(false);
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
+  const theme = useTheme();
+  const myInput = React.createRef()
+  const [width, setWidth] = React.useState(0);
+  const [height, setHeight] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const handleMenuItemClick = useCallback(index => {
+    setSelectedIndex(index);
+  });
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
   };
 
-  const handleChange = (event) => {
-    setStatus(event.target.value);
+  const Cards = () => {
+    const ref = useRef(null);
+    useEffect(() => {
+      setWidth(ref.current ? ref.current.offsetWidth : 0);
+      setHeight(ref.current ? ref.current.offsetHeight : 0);
+    }, [ref.current]);
+    return <div>
+      <Grid container>
+        {messages.filter(message => message.status === options[selectedIndex]).map(({ id, locked, projectnaam, projectnummer, type, header, subheader, date, publicatie, owner, status }) => (
+          <Grid item
+            xs={12} sm={6} md={4} lg={3} xl={2}
+          ><div ref={ref} >
+              <CardWidget id={id} locked={locked} projectnaam={projectnaam} projectnummer={projectnummer} type={type} header={header} subheader={subheader} date={date} owner={owner} publicatie={publicatie} status={status} />
+            </div></Grid>
+        ))}
+                  <Hidden smDown>
+
+        <Add width={width - 10} height={height} /></Hidden>
+      </Grid></div>;
   };
 
+  const drawer = (
+    <div>
+      <div className={classes.toolbar}>
+        <CardHeader className={classes.header}
+          avatar={
+            <Avatar aria-label="recipe" className={classes.avatar} />
+          }
+          action={
+            <User />
+          }
+          title="Jeffrey Boone"
+          subheader="Stagaire"
+        />
+      </div>
+      <Divider />
+      <List>
+        {["Test", "Values", "Only", "for"].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {["Demo"].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  );
 
+  const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
-      <AppBar position="static" className={classes.topAppBar}>
+             <CssBaseline />
+      <AppBar position="fixed" className={classes.topAppBar}>
         <Toolbar>
-          <IconButton mdDown edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <img src="dali-bright.png" alt="Italian Trulli" width="35" />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
+            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+              <img src="dali-bright.png" alt="Italian Trulli" width="30" />
+            </IconButton>
+            <div className={classes.add}>
+          <Typography variant="h6">
             Pve
           </Typography>
-          < AccountCircleRoundedIcon/>
-          <Divider orientation="vertical" flexItem />
+          <Hidden smDown>
+            <Typography variant="h6" className={classes.add}>
+            - Actueel overzicht
+          </Typography></Hidden></div>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -300,139 +341,64 @@ export default function App() {
         </Toolbar>
       </AppBar>
 
-      <Paper square className={classes.paper}>
-        <FormControl className={classes.formControl} fullWidth={true}>
-          <Select
-            variant="filled"
-            value={status}
-            onChange={handleChange}
-            displayEmpty
-            className={classes.selectEmpty}
-            inputProps={{ 'aria-label': 'Without label' }}
+      <nav className={classes.drawer} aria-label="mailbox folders">
+        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+        <Hidden mdUp implementation="css">
+          <Drawer
+            container={container}
+            variant="temporary"
+            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
           >
-            <MenuItem value={0}>
-              <em>All</em>
-            </MenuItem>
-            <MenuItem value={1}>In Bewerking</MenuItem>
-            <MenuItem value={2}>Vastgesteld</MenuItem>
-          </Select>
-          <FormHelperText>Status</FormHelperText>
-        </FormControl>
-        <List className={classes.list}>
-          <Grid container>
-            
-            {messages.map(({ id, locked, projectnaam, projectnummer, type, header, subheader, date, publicatie, owner }) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                <React.Fragment key={id}>
-                  <Card className={classes.card}>
-                    <CardHeader className={classes.header}
-                      avatar={
-                        <Avatar aria-label="recipe" className={classes.avatar}>
-                          {(locked === false) && <div id="myDiv">
-                            <LockOpenOutlinedIcon />
-                          </div>
-                          }
-                          {(locked === true) && <div id="myDiv">
-                            <LockIcon />
-                          </div>
-                          }
+            {drawer}
+          </Drawer>
+        </Hidden>
+        <Hidden smDown implementation="css">
+          <Drawer
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            variant="permanent"
+            open
+          >
+            {drawer}
+          </Drawer>
+        </Hidden>
+      </nav>
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
 
-                        </Avatar>
-                      }
-                      action={
-                        <IconButton aria-label="settings">
-                          <MoreVertIcon />
-                        </IconButton>
-                      }
-                      title={owner}
-                      subheader={date}
-                    />
-                    <TableContainer>
-                      <Table className={classes.table} aria-label="simple table">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell className={classes.tableHead}>{header}</TableCell>
-                            <TableCell className={classes.tableHead} align="right">{subheader}</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          <TableRow key={projectnaam}>
-                            <TableCell component="th" scope="row">
-                              Projectnaam
-                            </TableCell>
-                            <TableCell align="right">{projectnaam}</TableCell>
-                          </TableRow>
-                          <TableRow key={projectnummer}>
-                            <TableCell component="th" scope="row">
-                              Projectnummer
-                            </TableCell>
-                            <TableCell align="right">{projectnummer}</TableCell>
-                          </TableRow>
-                          <TableRow key={type}>
-                            <TableCell component="th" scope="row">
-                              Type
-                            </TableCell>
-                            <TableCell align="right">{type}</TableCell>
-                          </TableRow>
-                          <TableRow key={publicatie}>
-                            <TableCell component="th" scope="row">
-                              Publicatie
-                            </TableCell>
-                            <TableCell align="right">{publicatie}</TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                    <CardActions disableSpacing>
-                      <Button className={classes.button} variant="contained" color="primary" aria-label="open in browser">
-                        <OpenInBrowserIcon />
-                      </Button>
-                      <IconButton className={classes.button} aria-label="share">
-                        <DeleteForeverIcon />
-                      </IconButton>
-                      <Button className={classes.button} variant="outlined" color="secondary" aria-label="PersonAddDisabledIcon">
-                        <PersonAddDisabledIcon />
-                      </Button>
-                      <ColorButton className={classes.button} variant="outlined" color="primary" aria-label="PersonAddDisabledIcon">
-                        <PersonAddIcon />
-                      </ColorButton>
-                      <IconButton
-                        className={clsx(classes.expand, {
-                          [classes.expandOpen]: expanded,
-                        })}
-                        onClick={handleExpandClick}
-                        aria-expanded={expanded}
-                        aria-label="show more"
-                      >
-                        <ExpandMoreIcon />
-                      </IconButton>
-                    </CardActions>
-                    <Collapse in={expanded} timeout="auto" unmountOnExit>
-                      <CardContent>
-                        <Typography paragraph>Expanded list will be loaded here:</Typography>
-                      </CardContent>
-                    </Collapse>
-                  </Card>
-                </React.Fragment>
-              </Grid>
-            ))}
-          </Grid>
-        </List>
-      </Paper>
-      <AppBar position="fixed" color="primary" className={classes.appBar}>
-        <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="open drawer">
-            <MenuIcon />
-          </IconButton>
-          <Fab color="secondary" aria-label="add" className={classes.fabButton}>
-            <AddIcon />
-          </Fab>
-          <div className={classes.grow} />
-          <IconButton edge="end" color="inherit">
-            <MoreIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+        <Paper square className={classes.paper}>
+          <Filter handleMenuItemClick={handleMenuItemClick} selectedIndex={selectedIndex} options={options} />
+          <List className={classes.list}>
+            <Cards />
+          </List>
+
+        </Paper>
+        <AppBar position="fixed" className={classes.appBar}>
+          <Toolbar>
+            <Hidden mdUp>
+              <IconButton edge="start" color="inherit" aria-label="open drawer" onClick={handleDrawerToggle}>
+                <MenuIcon />
+              </IconButton>
+              <Fab color="secondary" aria-label="add" className={classes.fabButton} onClick={myInput}>
+                <AddIcon />
+              </Fab>
+            </Hidden>
+            <div className={classes.grow} />
+            <IconButton edge="end" color="inherit">
+              <MoreIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+      </main>
     </div>
   );
 }
