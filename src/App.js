@@ -16,7 +16,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { fade, makeStyles, useTheme } from '@material-ui/core/styles';
+import { fade, makeStyles, useTheme, withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
@@ -28,6 +28,21 @@ import CardWidget from './Card';
 import Filter from './Filter';
 import User from './User';
 import Add from './Add';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import Switch from '@material-ui/core/Switch';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
+import LockIcon from '@material-ui/icons/Lock';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#177F76"
   },
   add: {
-    flex: 1, 
+    flex: 1,
     display: "flex"
   },
   menuButton: {
@@ -239,16 +254,27 @@ export default function App(props) {
   const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
-  const myInput = React.createRef()
   const [width, setWidth] = React.useState(0);
   const [height, setHeight] = React.useState(0);
+  const [open, setOpen] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
   const handleMenuItemClick = useCallback(index => {
     setSelectedIndex(index);
   });
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleChange = () => { (selectedIndex == 0) ? setSelectedIndex(1) : setSelectedIndex(0) };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const Cards = () => {
@@ -266,11 +292,89 @@ export default function App(props) {
               <CardWidget id={id} locked={locked} projectnaam={projectnaam} projectnummer={projectnummer} type={type} header={header} subheader={subheader} date={date} owner={owner} publicatie={publicatie} status={status} />
             </div></Grid>
         ))}
-                  <Hidden smDown>
-
-        <Add width={width - 10} height={height} /></Hidden>
-      </Grid></div>;
+        {/* <Hidden smDown>
+          <Add width={width - 10} height={height} onclick={handleClickOpen} />
+        </Hidden> */}
+      </Grid>
+    </div>;
   };
+
+  const DialogWidget = () => {
+    return <div>
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">PvE Toevoegen</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Hier komt veel meer te staan is nu alleen als ontwerp bedoelt. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis arcu est, sollicitudin sit amet odio eu, consequat auctor nulla. Sed et fermentum nisi, vitae cursus felis.</DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Projectnaam"
+            type="email"
+            fullWidth
+          />          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Projectnummer"
+            type="email"
+            fullWidth
+          />
+          <FormControl component="fieldset" style={({ marginTop: '0.8rem' })}>
+            <FormLabel component="legend">Type</FormLabel>
+            <RadioGroup row aria-label="position" name="position" defaultValue="top">
+              <FormControlLabel value="beheer" control={<Radio color="primary" />} label="Beheer" />
+              <FormControlLabel value="onderhoud" control={<Radio color="primary" />} label="Onderhoud" />
+              <FormControlLabel value="nieuwbouw" control={<Radio color="primary" />} label="Nieuwbouw" />
+            </RadioGroup>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+    </Button>
+          <Button onClick={handleClose} color="primary">
+            Add
+    </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  };
+
+  const AntSwitch = withStyles((theme) => ({
+    root: {
+      width: 28,
+      height: 16,
+      padding: 0,
+      display: 'flex',
+    },
+    switchBase: {
+      padding: 2,
+      color: theme.palette.grey[500],
+      '&$checked': {
+        transform: 'translateX(12px)',
+        color: theme.palette.common.white,
+        '& + $track': {
+          opacity: 1,
+          backgroundColor: theme.palette.primary.main,
+          borderColor: theme.palette.primary.main,
+        },
+      },
+    },
+    thumb: {
+      width: 12,
+      height: 12,
+      boxShadow: 'none',
+    },
+    track: {
+      border: `1px solid ${theme.palette.grey[500]}`,
+      borderRadius: 16 / 2,
+      opacity: 1,
+      backgroundColor: theme.palette.common.white,
+    },
+    checked: {},
+  }))(Switch);
 
   const drawer = (
     <div>
@@ -287,6 +391,27 @@ export default function App(props) {
         />
       </div>
       <Divider />
+      <Hidden mdDown>
+        <List>
+          <ListItem style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            <Button variant="contained" color="secondary" fullWidth="false">
+              Add PvE
+        </Button>
+          </ListItem>
+          <ListItem style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            <Typography component="div">
+              <Grid component="label" container alignItems="center" spacing={2}>
+                <LockIcon />
+                <Grid item>
+                  <AntSwitch checked={(selectedIndex == 0) && true} onChange={handleChange} name="checkedC" />
+                </Grid>
+                <LockOpenOutlinedIcon />
+              </Grid>
+            </Typography>
+          </ListItem>
+        </List>
+        <Divider />
+      </Hidden>
       <List>
         {["Test", "Values", "Only", "for"].map((text, index) => (
           <ListItem button key={text}>
@@ -311,19 +436,19 @@ export default function App(props) {
 
   return (
     <div className={classes.root}>
-             <CssBaseline />
+      <CssBaseline />
       <AppBar position="fixed" className={classes.topAppBar}>
         <Toolbar>
-            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-              <img src="dali-bright.png" alt="Italian Trulli" width="30" />
-            </IconButton>
-            <div className={classes.add}>
-          <Typography variant="h6">
-            Pve
+          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+            <img src="dali-bright.png" alt="Italian Trulli" width="30" />
+          </IconButton>
+          <div className={classes.add}>
+            <Typography variant="h6">
+              Pve
           </Typography>
-          <Hidden smDown>
-            <Typography variant="h6" className={classes.add}>
-            - Actueel overzicht
+            <Hidden smDown>
+              <Typography variant="h6" className={classes.add}>
+                - Actueel overzicht
           </Typography></Hidden></div>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
@@ -342,7 +467,6 @@ export default function App(props) {
       </AppBar>
 
       <nav className={classes.drawer} aria-label="mailbox folders">
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Hidden mdUp implementation="css">
           <Drawer
             container={container}
@@ -376,7 +500,9 @@ export default function App(props) {
         <div className={classes.toolbar} />
 
         <Paper square className={classes.paper}>
-          <Filter handleMenuItemClick={handleMenuItemClick} selectedIndex={selectedIndex} options={options} />
+          <Hidden smUp>
+            <Filter handleMenuItemClick={handleMenuItemClick} selectedIndex={selectedIndex} options={options} />
+          </Hidden>
           <List className={classes.list}>
             <Cards />
           </List>
@@ -388,7 +514,8 @@ export default function App(props) {
               <IconButton edge="start" color="inherit" aria-label="open drawer" onClick={handleDrawerToggle}>
                 <MenuIcon />
               </IconButton>
-              <Fab color="secondary" aria-label="add" className={classes.fabButton} onClick={myInput}>
+              <Fab color="secondary" aria-label="add" className={classes.fabButton} onClick={handleClickOpen}>
+                <DialogWidget />
                 <AddIcon />
               </Fab>
             </Hidden>
