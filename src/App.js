@@ -391,10 +391,10 @@ export default function App(props) {
         />
       </div>
       <Divider />
-      <Hidden mdDown>
+      {/* <Hidden mdDown> */}
         <List>
           <ListItem style={{ flexDirection: 'row', justifyContent: 'center' }}>
-            <Button variant="contained" color="secondary" fullWidth="false">
+            <Button variant="contained" color="secondary" fullWidth="false" onClick={handleClickOpen}>
               Add PvE
         </Button>
           </ListItem>
@@ -411,7 +411,7 @@ export default function App(props) {
           </ListItem>
         </List>
         <Divider />
-      </Hidden>
+      {/* </Hidden> */}
       <List>
         {["Test", "Values", "Only", "for"].map((text, index) => (
           <ListItem button key={text}>
