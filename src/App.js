@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useCallback, useRef, useEffect, useState } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
@@ -28,6 +28,7 @@ import CardWidget from './Card';
 import Filter from './Filter';
 import User from './User';
 import Add from './Add';
+import { Dustbin } from './Dustbin';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -43,6 +44,8 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import LockIcon from '@material-ui/icons/Lock';
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -154,6 +157,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const style = {
+  margin: 0,
+  top: 'auto',
+  right: 20,
+  bottom: 90,
+  left: 'auto',
+  position: 'fixed',
+};
+
 const messages = [
   {
     id: 1,
@@ -235,7 +247,7 @@ const messages = [
     subheader: "TestPVE",
     projectnaam: "Tundra of Dust",
     projectnummer: "4197",
-    type: "Onderhoud",
+    type: "Testing",
     date: "3-2-1982",
     publicatie: "7",
     status: "Vastgesteld"
@@ -254,8 +266,6 @@ export default function App(props) {
   const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
-  const [width, setWidth] = React.useState(0);
-  const [height, setHeight] = React.useState(0);
   const [open, setOpen] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -263,6 +273,9 @@ export default function App(props) {
   const handleMenuItemClick = useCallback(index => {
     setSelectedIndex(index);
   });
+
+  const container = window !== undefined ? () => window().document.body : undefined;
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -278,69 +291,59 @@ export default function App(props) {
   };
 
   const Cards = () => {
-    const ref = useRef(null);
-    useEffect(() => {
-      setWidth(ref.current ? ref.current.offsetWidth : 0);
-      setHeight(ref.current ? ref.current.offsetHeight : 0);
-    }, [ref.current]);
     return <div>
       <Grid container>
         {messages.filter(message => message.status === options[selectedIndex]).map(({ id, locked, projectnaam, projectnummer, type, header, subheader, date, publicatie, owner, status }) => (
-          <Grid item
-            xs={12} sm={6} md={4} lg={3} xl={2}
-          ><div ref={ref} >
-              <CardWidget id={id} locked={locked} projectnaam={projectnaam} projectnummer={projectnummer} type={type} header={header} subheader={subheader} date={date} owner={owner} publicatie={publicatie} status={status} />
-            </div></Grid>
+          <Grid item xs={12} sm={6} md={4} lg={3} xl={2} >
+            <CardWidget id={id} locked={locked} projectnaam={projectnaam} projectnummer={projectnummer} type={type} header={header} subheader={subheader} date={date} owner={owner} publicatie={publicatie} status={status} />
+          </Grid>
         ))}
-        {/* <Hidden smDown>
-          <Add width={width - 10} height={height} onclick={handleClickOpen} />
-        </Hidden> */}
       </Grid>
     </div>;
   };
 
-  const DialogWidget = () => {
-    return <div>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">PvE Toevoegen</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Hier komt veel meer te staan is nu alleen als ontwerp bedoelt. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis arcu est, sollicitudin sit amet odio eu, consequat auctor nulla. Sed et fermentum nisi, vitae cursus felis.</DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Projectnaam"
-            type="email"
-            fullWidth
-          />          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Projectnummer"
-            type="email"
-            fullWidth
-          />
-          <FormControl component="fieldset" style={({ marginTop: '0.8rem' })}>
-            <FormLabel component="legend">Type</FormLabel>
-            <RadioGroup row aria-label="position" name="position" defaultValue="top">
-              <FormControlLabel value="beheer" control={<Radio color="primary" />} label="Beheer" />
-              <FormControlLabel value="onderhoud" control={<Radio color="primary" />} label="Onderhoud" />
-              <FormControlLabel value="nieuwbouw" control={<Radio color="primary" />} label="Nieuwbouw" />
-            </RadioGroup>
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-    </Button>
-          <Button onClick={handleClose} color="primary">
-            Add
-    </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  };
+  // const DialogWidget = () => {
+  //   return <div>
+  //     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+  //       <DialogTitle id="form-dialog-title">PvE Toevoegen</DialogTitle>
+  //       <DialogContent>
+  //         <DialogContentText>
+  //           Hier komt veel meer te staan is nu alleen als ontwerp bedoelt. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis arcu est, sollicitudin sit amet odio eu, consequat auctor nulla. Sed et fermentum nisi, vitae cursus felis.</DialogContentText>
+  //         <TextField
+  //           autoFocus
+  //           margin="dense"
+  //           id="name"
+  //           label="Projectnaam"
+  //           type="email"
+  //           fullWidth
+  //         />          <TextField
+  //           autoFocus
+  //           margin="dense"
+  //           id="name"
+  //           label="Projectnummer"
+  //           type="email"
+  //           fullWidth
+  //         />
+  //         <FormControl component="fieldset" style={({ marginTop: '0.8rem' })}>
+  //           <FormLabel component="legend">Type</FormLabel>
+  //           <RadioGroup row aria-label="position" name="position" defaultValue="top">
+  //             <FormControlLabel value="beheer" control={<Radio color="primary" />} label="Beheer" />
+  //             <FormControlLabel value="onderhoud" control={<Radio color="primary" />} label="Onderhoud" />
+  //             <FormControlLabel value="nieuwbouw" control={<Radio color="primary" />} label="Nieuwbouw" />
+  //           </RadioGroup>
+  //         </FormControl>
+  //       </DialogContent>
+  //       <DialogActions>
+  //         <Button onClick={handleClose} color="primary">
+  //           Cancel
+  //   </Button>
+  //         <Button onClick={handleClose} color="primary">
+  //           Add
+  //   </Button>
+  //       </DialogActions>
+  //     </Dialog>
+  //   </div>
+  // };
 
   const AntSwitch = withStyles((theme) => ({
     root: {
@@ -391,27 +394,25 @@ export default function App(props) {
         />
       </div>
       <Divider />
-      {/* <Hidden mdDown> */}
-        <List>
-          <ListItem style={{ flexDirection: 'row', justifyContent: 'center' }}>
-            <Button variant="contained" color="secondary" fullWidth="false" onClick={handleClickOpen}>
-              Add PvE
+      <List>
+        <ListItem style={{ flexDirection: 'row', justifyContent: 'center' }}>
+          <Button variant="contained" color="secondary" fullWidth="false" onClick={handleClickOpen}>
+            Add PvE
         </Button>
-          </ListItem>
-          <ListItem style={{ flexDirection: 'row', justifyContent: 'center' }}>
-            <Typography component="div">
-              <Grid component="label" container alignItems="center" spacing={2}>
-                <LockIcon />
-                <Grid item>
-                  <AntSwitch checked={(selectedIndex == 0) && true} onChange={handleChange} name="checkedC" />
-                </Grid>
-                <LockOpenOutlinedIcon />
+        </ListItem>
+        <ListItem style={{ flexDirection: 'row', justifyContent: 'center' }}>
+          <Typography component="div">
+            <Grid component="label" container alignItems="center" spacing={2}>
+              <LockIcon />
+              <Grid item>
+                <AntSwitch checked={(selectedIndex == 0) && true} onChange={handleChange} name="checkedC" />
               </Grid>
-            </Typography>
-          </ListItem>
-        </List>
-        <Divider />
-      {/* </Hidden> */}
+              <LockOpenOutlinedIcon />
+            </Grid>
+          </Typography>
+        </ListItem>
+      </List>
+      <Divider />
       <List>
         {["Test", "Values", "Only", "for"].map((text, index) => (
           <ListItem button key={text}>
@@ -432,8 +433,6 @@ export default function App(props) {
     </div>
   );
 
-  const container = window !== undefined ? () => window().document.body : undefined;
-
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -448,7 +447,7 @@ export default function App(props) {
           </Typography>
             <Hidden smDown>
               <Typography variant="h6" className={classes.add}>
-                - Actueel overzicht
+                &nbsp;-&nbsp;Actueel overzicht
           </Typography></Hidden></div>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
@@ -497,34 +496,38 @@ export default function App(props) {
         </Hidden>
       </nav>
       <main className={classes.content}>
-        <div className={classes.toolbar} />
-
-        <Paper square className={classes.paper}>
-          <Hidden smUp>
-            <Filter handleMenuItemClick={handleMenuItemClick} selectedIndex={selectedIndex} options={options} />
-          </Hidden>
-          <List className={classes.list}>
-            <Cards />
-          </List>
-
-        </Paper>
-        <AppBar position="fixed" className={classes.appBar}>
-          <Toolbar>
-            <Hidden mdUp>
-              <IconButton edge="start" color="inherit" aria-label="open drawer" onClick={handleDrawerToggle}>
-                <MenuIcon />
-              </IconButton>
-              <Fab color="secondary" aria-label="add" className={classes.fabButton} onClick={handleClickOpen}>
-                <DialogWidget />
-                <AddIcon />
-              </Fab>
+        <DndProvider backend={HTML5Backend}>
+          <div className={classes.toolbar} />
+          <Paper square className={classes.paper}>
+            <Hidden smUp>
+              <Filter handleMenuItemClick={handleMenuItemClick} selectedIndex={selectedIndex} options={options} />
             </Hidden>
-            <div className={classes.grow} />
-            <IconButton edge="end" color="inherit">
-              <MoreIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
+            <List className={classes.list}>
+              <Cards />
+            </List>
+          </Paper>
+
+          <Hidden smDown>
+            <Dustbin />
+          </Hidden>
+
+          <AppBar position="fixed" className={classes.appBar}>
+            <Toolbar>
+              <Hidden mdUp>
+                <IconButton edge="start" color="inherit" aria-label="open drawer" onClick={handleDrawerToggle}>
+                  <MenuIcon />
+                </IconButton>
+                <Fab color="secondary" aria-label="add" className={classes.fabButton} onClick={handleClickOpen}>
+                  <AddIcon />
+                </Fab>
+              </Hidden>
+              <div className={classes.grow} />
+              <IconButton edge="end" color="inherit">
+                <MoreIcon />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+        </DndProvider>
       </main>
     </div>
   );

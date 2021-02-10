@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react'
 import { withStyles, fade, makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import clsx from 'clsx';
+import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -25,7 +26,72 @@ import TableContainer from '@material-ui/core/TableContainer';
 import { green } from '@material-ui/core/colors';
 import Hidden from '@material-ui/core/Hidden';
 import { grey, blueGrey } from '@material-ui/core/colors';
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { useDrag } from 'react-dnd';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import Dialog from '@material-ui/core/Dialog';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import { ItemTypes } from './ItemTypes';
+import { Dustbin } from './Dustbin';
 
+function ConfirmationDialogRaw(props) {
+  const { onClose, value: valueProp, test, open, ...other } = props;
+  const [value, setValue] = React.useState(valueProp);
+  const radioGroupRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (!open) {
+      setValue(valueProp);
+    }
+  }, [valueProp, open]);
+
+  const handleEntering = () => {
+    if (radioGroupRef.current != null) {
+      radioGroupRef.current.focus();
+    }
+  };
+
+  const handleCancel = () => {
+    onClose();
+  };
+
+  const handleOk = () => {
+    onClose(value);
+    test()
+  };
+
+  return (
+    <Dialog
+      disableBackdropClick
+      disableEscapeKeyDown
+      maxWidth="xs"
+      onEntering={handleEntering}
+      aria-labelledby="confirmation-dialog-title"
+      open={open}
+      {...other}
+    >
+      <DialogTitle id="confirmation-dialog-title">Are you sure you want to delete this item?</DialogTitle>
+      <DialogActions>
+        <Button autoFocus onClick={handleCancel} color="primary">
+          Cancel
+		  </Button>
+        <Button onClick={handleOk} color="primary">
+          Ok
+		  </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+ConfirmationDialogRaw.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  value: PropTypes.string.isRequired,
+};
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -92,6 +158,10 @@ const useStyles = makeStyles((theme) => ({
   subheader: {
     backgroundColor: theme.palette.background.paper,
   },
+  test: {
+    width: "0",
+    backgroundColor: "black"
+  },
   topAppBar: {
     backgroundColor: "#177F76"
   },
@@ -146,7 +216,29 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const style = {
+  border: '1px dashed gray',
+  backgroundColor: 'white',
+  cursor: 'move',
+  width: "100%",
+};
+
+
 export default function CardWidget(props) {
+  var namesList = [
+    { name: "Projectnaam", id: props.projectnaam },
+    { name: "Projectnummer", id: props.projectnummer },
+    { name: "Type", id: props.type },
+    { name: "Publicatie", id: props.publicatie }
+  ];
+
+  var valuesList = [
+    { value: "1" },
+    { value: "2" },
+    { value: "3" },
+    { value: "4" }
+  ];
+
   const ColorButton = withStyles((theme) => ({
     root: {
       color: green[500],
@@ -156,10 +248,58 @@ export default function CardWidget(props) {
     },
   }))(Button);
   const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
   const [expanded, setExpanded] = React.useState(false);
+  const [list, setList] = React.useState(namesList);
+  const [value, setValue] = React.useState(valuesList);
+
+  const handleClose = (newValue) => {
+    setOpen(false);
+
+    if (newValue) {
+      setValue(newValue);
+    }
+  };
+
+  const handleRemove = useCallback(name => {
+    setList(list.filter(item => item.name !== name));
+    console.log(name)
+  });
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
+  };
+
+  const Box = ({ name, value }) => {
+    const [{ isDragging }, drag] = useDrag({
+      item: { name, type: ItemTypes.BOX },
+      end: (item, monitor) => {
+        const dropResult = monitor.getDropResult();
+        if (item && dropResult) {
+          setOpen(true)
+        }
+      },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+    });
+    const opacity = isDragging ? 0.4 : 1;
+
+    return (
+      <TableRow ref={drag} style={{ ...style, opacity }} key={props.publicatie} >
+        <TableCell component="th" scope="row">{name}</TableCell>
+        <TableCell align="right">{value}</TableCell>
+        <ConfirmationDialogRaw
+          classes={{
+            paper: classes.paper,
+          }}
+          id="ringtone-menu"
+          keepMounted
+          open={open}
+          onClose={handleClose}
+          test={() => handleRemove(name)} />
+      </TableRow>
+    );
   };
 
   return (
@@ -197,30 +337,13 @@ export default function CardWidget(props) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <TableRow key={props.projectnaam}>
-                  <TableCell component="th" scope="row">
-                    Projectnaam
-                            </TableCell>
-                  <TableCell align="right">{props.projectnaam}</TableCell>
-                </TableRow>
-                <TableRow key={props.projectnummer}>
-                  <TableCell component="th" scope="row">
-                    Projectnummer
-                            </TableCell>
-                  <TableCell align="right">{props.projectnummer}</TableCell>
-                </TableRow>
-                <TableRow key={props.type}>
-                  <TableCell component="th" scope="row">
-                    Type
-                            </TableCell>
-                  <TableCell align="right">{props.type}</TableCell>
-                </TableRow>
-                <TableRow key={props.publicatie}>
-                  <TableCell component="th" scope="row">
-                    Publicatie
-                            </TableCell>
-                  <TableCell align="right">{props.publicatie}</TableCell>
-                </TableRow>
+                <DndProvider backend={HTML5Backend}>
+                  {list.map(list => {
+                    return (
+                      <Box name={list.name} value={list.id} deleter={handleRemove} />
+                    );
+                  })}
+                </DndProvider>
               </TableBody>
             </Table>
           </TableContainer>
@@ -249,27 +372,28 @@ export default function CardWidget(props) {
             >
               <ExpandMoreIcon />
             </IconButton>
+
           </CardActions>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
 
-          <TableContainer>
-            <Table className={classes.table} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell className={classes.tableHead}>Hier</TableCell>
-                  <TableCell className={classes.tableHead} align="right">Komt</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow key={props.projectnaam}>
-                  <TableCell component="th" scope="row">
-                    Extra
+            <TableContainer>
+              <Table className={classes.table} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell className={classes.tableHead}>Hier</TableCell>
+                    <TableCell className={classes.tableHead} align="right">Komt</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow key={props.projectnaam}>
+                    <TableCell component="th" scope="row">
+                      Extra
                             </TableCell>
-                  <TableCell align="right">Info</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
+                    <TableCell align="right">Info</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
 
           </Collapse>
         </Card>
