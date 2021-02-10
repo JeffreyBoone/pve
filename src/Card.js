@@ -24,6 +24,7 @@ import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import LockIcon from '@material-ui/icons/Lock';
 import TableContainer from '@material-ui/core/TableContainer';
 import { green } from '@material-ui/core/colors';
+import Snackbar from '@material-ui/core/Snackbar';
 import Hidden from '@material-ui/core/Hidden';
 import { grey, blueGrey } from '@material-ui/core/colors';
 import { DndProvider } from 'react-dnd'
@@ -42,6 +43,13 @@ function ConfirmationDialogRaw(props) {
   const { onClose, value: valueProp, test, open, ...other } = props;
   const [value, setValue] = React.useState(valueProp);
   const radioGroupRef = React.useRef(null);
+  const [state, setState] = React.useState({
+    open1: false,
+    vertical: 'top',
+    horizontal: 'center',
+  });
+
+  const { vertical, horizontal, open1 } = state;
 
   React.useEffect(() => {
     if (!open) {
@@ -62,6 +70,15 @@ function ConfirmationDialogRaw(props) {
   const handleOk = () => {
     onClose(value);
     test()
+    handleClick({ vertical: 'top', horizontal: 'center' });
+  };
+
+  const handleClick = (newState) => () => {
+    setState({ open1: true, ...newState });
+  };
+
+  const handleClose = () => {
+    setState({ ...state, open1: false });
   };
 
   return (
@@ -82,6 +99,13 @@ function ConfirmationDialogRaw(props) {
         <Button onClick={handleOk} color="primary">
           Ok
 		  </Button>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open1}
+        onClose={handleClose}
+        message="I love snacks"
+        key={vertical + horizontal}
+      />
       </DialogActions>
     </Dialog>
   );
