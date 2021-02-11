@@ -33,11 +33,6 @@ import { useDrag } from 'react-dnd';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import { ItemTypes } from './ItemTypes';
-import { Dustbin } from './Dustbin';
 
 function ConfirmationDialogRaw(props) {
   const { onClose, value: valueProp, test, open, ...other } = props;
@@ -296,7 +291,7 @@ export default function CardWidget(props) {
 
   const Box = ({ name, value }) => {
     const [{ isDragging }, drag] = useDrag({
-      item: { name, type: ItemTypes.BOX },
+      item: { name, type: "item" },
       end: (item, monitor) => {
         const dropResult = monitor.getDropResult();
         if (item && dropResult) {

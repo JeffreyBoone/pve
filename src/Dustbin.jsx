@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { ItemTypes } from './ItemTypes';
 import Fab from '@material-ui/core/Fab';
 
 const style = {
@@ -15,7 +14,7 @@ const style = {
 };
 export const Dustbin = () => {
     const [{ canDrop, isOver }, drop] = useDrop({
-        accept: ItemTypes.BOX,
+        accept: "item",
         drop: () => ({ name: 'the Dustbin' }),
         collect: (monitor) => ({
             isOver: monitor.isOver(),
