@@ -356,13 +356,11 @@ export default function CardWidget(props) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <DndProvider backend={HTML5Backend}>
                   {list.map(list => {
                     return (
                       <Box name={list.name} value={list.id} deleter={handleRemove} />
                     );
                   })}
-                </DndProvider>
               </TableBody>
             </Table>
           </TableContainer>
