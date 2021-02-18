@@ -35,6 +35,7 @@ import LockIcon from '@material-ui/icons/Lock';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import messages from './data.json';
+import AddPveDialogRaw from './components/AddPve';
 
 const drawerWidth = 240;
 
@@ -256,6 +257,14 @@ export default function App(props) {
           <Button variant="contained" color="secondary" fullWidth="false" onClick={handleClickOpen}>
             Add PvE
         </Button>
+        <AddPveDialogRaw
+          classes={{
+            paper: classes.paper,
+          }}
+          id="ringtone-menu"
+          keepMounted
+          onClose={handleClose}
+          open={open}/>
         </ListItem>
         <ListItem style={{ flexDirection: 'row', justifyContent: 'center' }}>
           <Typography component="div">

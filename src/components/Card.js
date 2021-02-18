@@ -160,6 +160,7 @@ const style = {
 
 
 export default function CardWidget(props) {
+  //
   var namesList = [
     { name: "Projectnaam", id: props.projectnaam },
     { name: "Projectnummer", id: props.projectnummer },
