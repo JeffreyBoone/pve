@@ -1,8 +1,6 @@
 import React from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
-import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 import Menu from '@material-ui/core/Menu';
 import IconButton from '@material-ui/core/IconButton';
 import { MoreVert } from '@material-ui/icons';

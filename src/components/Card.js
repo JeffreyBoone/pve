@@ -4,7 +4,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -24,93 +23,10 @@ import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import LockIcon from '@material-ui/icons/Lock';
 import TableContainer from '@material-ui/core/TableContainer';
 import { green } from '@material-ui/core/colors';
-import Snackbar from '@material-ui/core/Snackbar';
 import Hidden from '@material-ui/core/Hidden';
 import { grey, blueGrey } from '@material-ui/core/colors';
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useDrag } from 'react-dnd';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogActions from '@material-ui/core/DialogActions';
-import Dialog from '@material-ui/core/Dialog';
-
-function ConfirmationDialogRaw(props) {
-  const { onClose, value: valueProp, test, open, ...other } = props;
-  const [value, setValue] = React.useState(valueProp);
-  const radioGroupRef = React.useRef(null);
-  const [state, setState] = React.useState({
-    open1: false,
-    vertical: 'top',
-    horizontal: 'center',
-  });
-
-  const { vertical, horizontal, open1 } = state;
-
-  React.useEffect(() => {
-    if (!open) {
-      setValue(valueProp);
-    }
-  }, [valueProp, open]);
-
-  const handleEntering = () => {
-    if (radioGroupRef.current != null) {
-      radioGroupRef.current.focus();
-    }
-  };
-
-  const handleCancel = () => {
-    onClose();
-  };
-
-  const handleOk = () => {
-    onClose(value);
-    test()
-    handleClick({ vertical: 'top', horizontal: 'center' });
-  };
-
-  const handleClick = (newState) => () => {
-    setState({ open1: true, ...newState });
-  };
-
-  const handleClose = () => {
-    setState({ ...state, open1: false });
-  };
-
-  return (
-    <Dialog
-      disableBackdropClick
-      disableEscapeKeyDown
-      maxWidth="xs"
-      onEntering={handleEntering}
-      aria-labelledby="confirmation-dialog-title"
-      open={open}
-      {...other}
-    >
-      <DialogTitle id="confirmation-dialog-title">Are you sure you want to delete this item?</DialogTitle>
-      <DialogActions>
-        <Button autoFocus onClick={handleCancel} color="primary">
-          Cancel
-		  </Button>
-        <Button onClick={handleOk} color="primary">
-          Ok
-		  </Button>
-      <Snackbar
-        anchorOrigin={{ vertical, horizontal }}
-        open={open1}
-        onClose={handleClose}
-        message="I love snacks"
-        key={vertical + horizontal}
-      />
-      </DialogActions>
-    </Dialog>
-  );
-}
-
-ConfirmationDialogRaw.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-  value: PropTypes.string.isRequired,
-};
+import ConfirmationDialogRaw from './ConfirmDialog';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -251,13 +167,6 @@ export default function CardWidget(props) {
     { name: "Publicatie", id: props.publicatie }
   ];
 
-  var valuesList = [
-    { value: "1" },
-    { value: "2" },
-    { value: "3" },
-    { value: "4" }
-  ];
-
   const ColorButton = withStyles((theme) => ({
     root: {
       color: green[500],
@@ -270,14 +179,9 @@ export default function CardWidget(props) {
   const [open, setOpen] = React.useState(false);
   const [expanded, setExpanded] = React.useState(false);
   const [list, setList] = React.useState(namesList);
-  const [value, setValue] = React.useState(valuesList);
 
   const handleClose = (newValue) => {
     setOpen(false);
-
-    if (newValue) {
-      setValue(newValue);
-    }
   };
 
   const handleRemove = useCallback(name => {
@@ -336,7 +240,6 @@ export default function CardWidget(props) {
                   <LockIcon />
                 </div>
                 }
-
               </Avatar>
             }
             action={
@@ -389,10 +292,8 @@ export default function CardWidget(props) {
             >
               <ExpandMoreIcon />
             </IconButton>
-
           </CardActions>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
-
             <TableContainer>
               <Table className={classes.table} aria-label="simple table">
                 <TableHead>
@@ -411,7 +312,6 @@ export default function CardWidget(props) {
                 </TableBody>
               </Table>
             </TableContainer>
-
           </Collapse>
         </Card>
       </React.Fragment>

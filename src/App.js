@@ -24,28 +24,19 @@ import AddIcon from '@material-ui/icons/Add';
 import SearchIcon from '@material-ui/icons/Search';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import InputBase from '@material-ui/core/InputBase';
-import CardWidget from './Card';
-import Filter from './Filter';
-import User from './User';
-import Add from './Add';
-import { Dustbin } from './Dustbin';
+import CardWidget from './components/Card';
+import Filter from './components/Filter';
+import User from './components/User';
+import { Dustbin } from './components/Dustbin';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
 import Switch from '@material-ui/core/Switch';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import LockIcon from '@material-ui/icons/Lock';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
+import messages from './data.json';
+
+const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -166,102 +157,6 @@ const style = {
   position: 'fixed',
 };
 
-const messages = [
-  {
-    id: 1,
-    owner: "Made by: Jeffrey Boone",
-    header: "074204",
-    subheader: "TestPVE",
-    projectnaam: "Frozen yoghurt",
-    projectnummer: "1233",
-    type: "Onderhoud",
-    date: "1-1-1934",
-    publicatie: "1",
-    status: "Vastgesteld"
-  },
-  {
-    id: 2,
-    owner: "Made by: Jeffrey Boone",
-    header: "0002123",
-    subheader: "TestPVE",
-    projectnaam: "On The Hunt",
-    projectnummer: "6372",
-    type: "Onderhoud",
-    date: "21-9-1982",
-    publicatie: "2",
-    status: "In Bewerking"
-  },
-  {
-    id: 3,
-    owner: "Made by: Jeffrey Boone",
-    header: "0372947",
-    subheader: "TestPVE",
-    projectnaam: "The Frozen Dessert",
-    projectnummer: "8386",
-    type: "Onderhoud",
-    date: "3-3-2002",
-    publicatie: "3",
-    status: "In Bewerking"
-  }, {
-    id: 4,
-    owner: "Made by: Stefan",
-    header: "087420",
-    subheader: "TestPVE",
-    projectnaam: "From Long to Lost",
-    projectnummer: "2301",
-    type: "Onderhoud",
-    date: "23-7-2021",
-    publicatie: "4",
-    status: "Vastgesteld"
-
-  },
-  {
-    id: 5,
-    owner: "Made by: Jeffrey Boone",
-    header: "963264",
-    subheader: "TestPVE",
-    projectnaam: "Behind the Gatewalls",
-    projectnummer: "67893",
-    type: "Onderhoud",
-    date: "8-3-1998",
-    publicatie: "5",
-    status: "In Bewerking"
-  },
-  {
-    id: 6,
-    owner: "Made by: Anand",
-    header: "83729873",
-    subheader: "TestPVE",
-    projectnaam: "Bind The Door",
-    projectnummer: "8523",
-    type: "Onderhoud",
-    date: "9-6-2019",
-    publicatie: "6",
-    status: "Vastgesteld"
-
-  },
-  {
-    id: 7,
-    owner: "Made by: Jeffrey Boone",
-    header: "0873230",
-    subheader: "TestPVE",
-    projectnaam: "Tundra of Dust",
-    projectnummer: "4197",
-    type: "Testing",
-    date: "3-2-1982",
-    publicatie: "7",
-    status: "Vastgesteld"
-
-  },
-];
-
-const options = [
-  "In Bewerking",
-  "Vastgesteld",
-];
-
-const drawerWidth = 240;
-
 export default function App(props) {
   const { window } = props;
   const classes = useStyles();
@@ -269,6 +164,11 @@ export default function App(props) {
   const [open, setOpen] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const options = [
+    "In Bewerking",
+    "Vastgesteld",
+  ];
 
   const handleMenuItemClick = useCallback(index => {
     setSelectedIndex(index);
@@ -301,49 +201,6 @@ export default function App(props) {
       </Grid>
     </div>;
   };
-
-  // const DialogWidget = () => {
-  //   return <div>
-  //     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-  //       <DialogTitle id="form-dialog-title">PvE Toevoegen</DialogTitle>
-  //       <DialogContent>
-  //         <DialogContentText>
-  //           Hier komt veel meer te staan is nu alleen als ontwerp bedoelt. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis arcu est, sollicitudin sit amet odio eu, consequat auctor nulla. Sed et fermentum nisi, vitae cursus felis.</DialogContentText>
-  //         <TextField
-  //           autoFocus
-  //           margin="dense"
-  //           id="name"
-  //           label="Projectnaam"
-  //           type="email"
-  //           fullWidth
-  //         />          <TextField
-  //           autoFocus
-  //           margin="dense"
-  //           id="name"
-  //           label="Projectnummer"
-  //           type="email"
-  //           fullWidth
-  //         />
-  //         <FormControl component="fieldset" style={({ marginTop: '0.8rem' })}>
-  //           <FormLabel component="legend">Type</FormLabel>
-  //           <RadioGroup row aria-label="position" name="position" defaultValue="top">
-  //             <FormControlLabel value="beheer" control={<Radio color="primary" />} label="Beheer" />
-  //             <FormControlLabel value="onderhoud" control={<Radio color="primary" />} label="Onderhoud" />
-  //             <FormControlLabel value="nieuwbouw" control={<Radio color="primary" />} label="Nieuwbouw" />
-  //           </RadioGroup>
-  //         </FormControl>
-  //       </DialogContent>
-  //       <DialogActions>
-  //         <Button onClick={handleClose} color="primary">
-  //           Cancel
-  //   </Button>
-  //         <Button onClick={handleClose} color="primary">
-  //           Add
-  //   </Button>
-  //       </DialogActions>
-  //     </Dialog>
-  //   </div>
-  // };
 
   const AntSwitch = withStyles((theme) => ({
     root: {
