@@ -5,6 +5,7 @@ import Dialog from '@material-ui/core/Dialog';
 import PropTypes from 'prop-types';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
+import SimpleSnackbar from './SimpleSnackbar';
 
 export default function ConfirmationDialogRaw(props) {
     const { onClose, value: valueProp, test, open, ...other } = props;
@@ -66,13 +67,12 @@ export default function ConfirmationDialogRaw(props) {
           <Button onClick={handleOk} color="primary">
             Ok
             </Button>
-        <Snackbar
-          anchorOrigin={{ vertical, horizontal }}
-          open={open1}
+            <SimpleSnackbar
+         
+          id="ringtone-menu"
+          keepMounted
           onClose={handleClose}
-          message="I love snacks"
-          key={vertical + horizontal}
-        />
+          open={open}/>
         </DialogActions>
       </Dialog>
     );
